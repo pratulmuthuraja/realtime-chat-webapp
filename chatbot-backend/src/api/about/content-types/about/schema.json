@@ -1,0 +1,26 @@
+{
+  "kind": "collectionType",
+  "collectionName": "abouts",
+  "info": {
+    "singularName": "about",
+    "pluralName": "abouts",
+    "displayName": "Message",
+    "description": "Write about yourself and the content you create"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "content": {
+      "type": "text"
+    },
+    "senderId": {
+      "type": "uid",
+      "targetField": "content"
+    },
+    "timestamp": {
+      "type": "datetime"
+    }
+  }
+}
