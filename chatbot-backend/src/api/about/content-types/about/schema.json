@@ -12,15 +12,22 @@
   },
   "pluginOptions": {},
   "attributes": {
-    "content": {
+    "messageContent": {
       "type": "text"
     },
-    "senderId": {
-      "type": "uid",
-      "targetField": "content"
-    },
-    "timestamp": {
+    "messageTimestamp": {
       "type": "datetime"
+    },
+    "session": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::session.session",
+      "inversedBy": "messages"
+    },
+    "users_permissions_user": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "plugin::users-permissions.user"
     }
   }
 }

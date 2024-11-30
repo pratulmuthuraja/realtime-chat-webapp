@@ -1,0 +1,35 @@
+{
+  "kind": "collectionType",
+  "collectionName": "sessions",
+  "info": {
+    "singularName": "session",
+    "pluralName": "sessions",
+    "displayName": "Session",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "sessionTitle": {
+      "type": "string"
+    },
+    "messages": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::about.about",
+      "mappedBy": "session"
+    },
+    "sessionStatus": {
+      "type": "enumeration",
+      "enum": [
+        "active",
+        "closed"
+      ]
+    },
+    "sessionCreatedAt": {
+      "type": "datetime"
+    }
+  }
+}
