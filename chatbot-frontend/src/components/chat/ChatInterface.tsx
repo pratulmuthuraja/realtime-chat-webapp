@@ -3,6 +3,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { useWebSocket } from '@/lib/hooks/useWebSocket';
+import { useRouter } from 'next/navigation';
 
 interface Message {
   id: string;
@@ -16,6 +17,7 @@ export default function ChatInterface() {
   const [inputMessage, setInputMessage] = useState('');
   const { isConnected, sendMessage, lastMessage } = useWebSocket();
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
 
   // Scroll to bottom when new messages arrive
 // Inside ChatInterface.tsx, update the useEffect for lastMessage:
@@ -27,7 +29,7 @@ useEffect(() => {
       }]);
     }
   }, [lastMessage]);
-  
+
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
@@ -39,15 +41,32 @@ useEffect(() => {
     setInputMessage('');
   };
 
+  const handleLogout = () => {
+    // Clear token
+    localStorage.removeItem('token');
+    // Disconnect WebSocket (it will be handled in the cleanup function)
+    // Redirect to login
+    router.push('/auth/login');
+  };
+
   return (
     <div className="flex flex-col h-screen max-w-2xl mx-auto bg-white shadow-lg">
-      {/* Header */}
-      <div className="p-4 border-b">
-        <div className="flex items-center gap-2">
-          <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-500' : 'bg-red-500'}`} />
-          <span className="font-medium">{isConnected ? 'Connected' : 'Disconnected'}</span>
-        </div>
+    {/* Header */}
+    <div className="p-4 border-b flex items-center justify-between">
+      {/* Left side - Connection status */}
+      <div className="flex items-center gap-2">
+        <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-500' : 'bg-red-500'}`} />
+        <span className="font-medium">{isConnected ? 'Connected' : 'Disconnected'}</span>
       </div>
+      
+      {/* Right side - Logout button */}
+      <button
+        onClick={handleLogout}
+        className="px-3 py-1.5 text-sm text-white bg-red-500 rounded hover:bg-red-600 transition-colors"
+      >
+        Logout
+      </button>
+    </div>
 
       {/* Messages */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
