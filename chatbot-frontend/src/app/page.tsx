@@ -10,7 +10,7 @@ export default function Home() {
     // Check if there's a token
     const token = localStorage.getItem('token');
     if (token) {
-      router.replace('/chat');
+      router.push('/chat');
     } else {
       router.push('/auth/login');
     }
