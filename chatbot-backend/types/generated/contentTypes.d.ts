@@ -369,38 +369,6 @@ export interface AdminUser extends Struct.CollectionTypeSchema {
   };
 }
 
-export interface ApiAboutAbout extends Struct.CollectionTypeSchema {
-  collectionName: 'abouts';
-  info: {
-    description: 'Write about yourself and the content you create';
-    displayName: 'Message';
-    pluralName: 'abouts';
-    singularName: 'about';
-  };
-  options: {
-    draftAndPublish: false;
-  };
-  attributes: {
-    createdAt: Schema.Attribute.DateTime;
-    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-    locale: Schema.Attribute.String & Schema.Attribute.Private;
-    localizations: Schema.Attribute.Relation<'oneToMany', 'api::about.about'> &
-      Schema.Attribute.Private;
-    messageContent: Schema.Attribute.Text;
-    messageTimestamp: Schema.Attribute.DateTime;
-    publishedAt: Schema.Attribute.DateTime;
-    session: Schema.Attribute.Relation<'manyToOne', 'api::session.session'>;
-    updatedAt: Schema.Attribute.DateTime;
-    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-    users_permissions_user: Schema.Attribute.Relation<
-      'oneToOne',
-      'plugin::users-permissions.user'
-    >;
-  };
-}
-
 export interface ApiGlobalGlobal extends Struct.SingleTypeSchema {
   collectionName: 'globals';
   info: {
@@ -436,13 +404,12 @@ export interface ApiGlobalGlobal extends Struct.SingleTypeSchema {
 export interface ApiSessionSession extends Struct.CollectionTypeSchema {
   collectionName: 'sessions';
   info: {
-    description: '';
     displayName: 'Session';
     pluralName: 'sessions';
     singularName: 'session';
   };
   options: {
-    draftAndPublish: true;
+    draftAndPublish: false;
   };
   attributes: {
     createdAt: Schema.Attribute.DateTime;
@@ -454,14 +421,17 @@ export interface ApiSessionSession extends Struct.CollectionTypeSchema {
       'api::session.session'
     > &
       Schema.Attribute.Private;
-    messages: Schema.Attribute.Relation<'oneToMany', 'api::about.about'>;
+    messages: Schema.Attribute.JSON;
+    name: Schema.Attribute.String & Schema.Attribute.Required;
     publishedAt: Schema.Attribute.DateTime;
     sessionCreatedAt: Schema.Attribute.DateTime;
-    sessionStatus: Schema.Attribute.Enumeration<['active', 'closed']>;
-    sessionTitle: Schema.Attribute.String;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    user: Schema.Attribute.Relation<
+      'manyToOne',
+      'plugin::users-permissions.user'
+    >;
   };
 }
 
@@ -923,6 +893,10 @@ export interface PluginUsersPermissionsUser
   };
   attributes: {
     blocked: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    chatSessions: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::session.session'
+    >;
     confirmationToken: Schema.Attribute.String & Schema.Attribute.Private;
     confirmed: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     createdAt: Schema.Attribute.DateTime;
@@ -973,7 +947,6 @@ declare module '@strapi/strapi' {
       'admin::transfer-token': AdminTransferToken;
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
-      'api::about.about': ApiAboutAbout;
       'api::global.global': ApiGlobalGlobal;
       'api::session.session': ApiSessionSession;
       'plugin::content-releases.release': PluginContentReleasesRelease;

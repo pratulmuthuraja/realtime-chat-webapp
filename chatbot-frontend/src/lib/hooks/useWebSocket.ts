@@ -8,10 +8,12 @@ interface Message {
   timestamp: Date;
 }
 
+
 export function useWebSocket() {
   const [socket, setSocket] = useState<Socket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const [lastMessage, setLastMessage] = useState<Message | null>(null);
+  const generateId = () => Math.random().toString(36).substring(2) + Date.now().toString(36);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -42,13 +44,13 @@ export function useWebSocket() {
     });
 
     socketInstance.on('message', (message) => {
-      console.log('Received message:', message);
-      setLastMessage({
-        ...message,
-        id: Date.now().toString(),
-        isFromUser: false
+        console.log('Received message:', message);
+        setLastMessage({
+          ...message,
+          id: generateId(), // Ensure unique ID for bot messages
+          isFromUser: false
+        });
       });
-    });
 
     setSocket(socketInstance);
 
@@ -58,22 +60,18 @@ export function useWebSocket() {
     };
   }, []);
 
-  const sendMessage = useCallback((content: string) => {
+ const sendMessage = useCallback((content: string) => {
     if (!socket || !isConnected) {
       console.log('Cannot send message: not connected');
       return;
     }
 
     console.log('Sending message:', content);
-    const message = {
-      id: Date.now().toString(),
-      content,
-      timestamp: new Date(),
-      isFromUser: true
-    };
-
-    socket.emit('message', message);
-    setLastMessage(message);
+    socket.emit('message', {
+        content,
+        timestamp: new Date(),
+        isFromUser: true
+      });
   }, [socket, isConnected]);
 
   return { isConnected, sendMessage, lastMessage };

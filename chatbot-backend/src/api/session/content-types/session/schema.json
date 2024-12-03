@@ -4,32 +4,26 @@
   "info": {
     "singularName": "session",
     "pluralName": "sessions",
-    "displayName": "Session",
-    "description": ""
+    "displayName": "Session"
   },
   "options": {
-    "draftAndPublish": true
+    "draftAndPublish": false
   },
-  "pluginOptions": {},
   "attributes": {
-    "sessionTitle": {
-      "type": "string"
+    "name": {
+      "type": "string",
+      "required": true
     },
     "messages": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::about.about",
-      "mappedBy": "session"
-    },
-    "sessionStatus": {
-      "type": "enumeration",
-      "enum": [
-        "active",
-        "closed"
-      ]
+      "type": "json"
     },
     "sessionCreatedAt": {
       "type": "datetime"
+    },
+    "user": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user"
     }
   }
 }
