@@ -37,6 +37,16 @@ export default {
           required: true
         }
       }
+    },
+    {
+      method: 'DELETE',
+      path: '/sessions/:id',
+      handler: 'session.deleteSession',
+      config: {
+        auth: {
+          required: true
+        }
+      }
     }
   ]
  };

@@ -95,5 +95,30 @@ async getUserSessions(ctx) {
       console.error('Update error:', error);
       return ctx.badRequest('Error updating session');
     }
+},
+
+async deleteSession(ctx) {
+  const { id } = ctx.params;
+  const { user } = ctx.state;
+
+  try {
+    const session = await strapi.db.query('api::session.session').findOne({
+      where: { id },
+      populate: { user: true }
+    });
+
+    if (!session || session.user.id !== user.id) {
+      return ctx.notFound('Session not found');
+    }
+
+    await strapi.db.query('api::session.session').delete({
+      where: { id }
+    });
+
+    return ctx.send({ message: 'Session deleted' });
+  } catch (error) {
+    return ctx.badRequest('Error deleting session');
+  }
 }
+
 }));
